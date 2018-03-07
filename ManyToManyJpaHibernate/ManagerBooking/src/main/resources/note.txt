@@ -1,0 +1,4 @@
+* CSDL net lien many to many
+- Du lieu trung lap se tu dong ko them vao nua. neu de not autocrement
+- Neu dat PK not increment, se phai them tung id.
+- Them, sua can truyen ca id vao de hien thi data.
