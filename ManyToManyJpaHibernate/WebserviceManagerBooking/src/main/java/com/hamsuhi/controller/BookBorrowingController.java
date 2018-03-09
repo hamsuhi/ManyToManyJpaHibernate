@@ -100,7 +100,7 @@ public class BookBorrowingController {
 		return new ResponseEntity<BookBorrowing>(bookReadNew, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/bookingBorrowing/{id}/{bookingId}/{numberCard}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/bookingBorrowing/{numberCard}/{bookingId}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteById(@PathVariable("numberCard") int readId, @PathVariable("bookingId") int bookId) {
 
 		if (bookBorrowingService.deleteById(readId, bookId) == false) {
