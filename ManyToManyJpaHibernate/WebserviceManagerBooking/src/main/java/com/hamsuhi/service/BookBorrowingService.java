@@ -7,14 +7,24 @@ import org.springframework.stereotype.Service;
 
 import com.hamsuhi.entity.BookBorrowing;
 import com.hamsuhi.entity.BookBorrowingId;
+import com.hamsuhi.entity.Booking;
 import com.hamsuhi.entity.Reader;
 import com.hamsuhi.repository.BookBorrowingRepository;
+import com.hamsuhi.repository.BookingRepository;
+import com.hamsuhi.repository.ReaderRepository;
+
 //can sua add va update
 @Service
 public class BookBorrowingService {
 
 	@Autowired
 	private BookBorrowingRepository bookBorrowingRepository;
+	
+	@Autowired
+	private ReaderRepository readerRepository;
+	
+	@Autowired
+	private BookingRepository bookingRepository;
 
 	public List<BookBorrowing> getAll() {
 		List<BookBorrowing> list = bookBorrowingRepository.findAll();
@@ -34,37 +44,33 @@ public class BookBorrowingService {
 		return null;
 	}
 
-	//Khi add can them ca id khi tao data first
-	public BookBorrowing add(BookBorrowing bookBorrowing) {
-		BookBorrowingId bookBorrowingID = new BookBorrowingId(bookBorrowing.getId().getBookingId(),
-				bookBorrowing.getId().getNumberCard());
-
+	//Integer bookingId, Integer numberCard,
+	// Khi add can them ca id khi tao data first
+	public boolean add( BookBorrowing bookBorrowing) {
+		BookBorrowingId bookBorrowingID = new BookBorrowingId(bookBorrowing.getId().getNumberCard(),
+				bookBorrowing.getId().getBookingId());
 		if (bookBorrowingRepository.findOne(bookBorrowingID) != null) {
-			return null;
-		} else {
-			System.out.println("add thanh cong");
-			return bookBorrowingRepository.save(bookBorrowing);
+			return false;
 		}
+		bookBorrowingRepository.save(bookBorrowing);
+		return true;
 	}
 
 	public boolean update(BookBorrowing bookBorrowing) {
-		BookBorrowingId bookBorrowingId = new BookBorrowingId(bookBorrowing.getId().getBookingId(),
-				bookBorrowing.getId().getNumberCard());
-
-		if (bookBorrowingRepository.findOne(bookBorrowingId) != null) {
+		BookBorrowingId bookBorrowingId = new BookBorrowingId(bookBorrowing.getId().getNumberCard(),
+				bookBorrowing.getId().getBookingId());
+		if (bookBorrowingRepository.findOne(bookBorrowingId) == null) {
 			return false;
 		}
 		bookBorrowingRepository.saveAndFlush(bookBorrowing);
 		System.out.println("update thanh cong");
 		return true;
-
 	}
 
-	//de xoa  duoc can xoa bang cha (chua PK) truoc.
+	// de xoa duoc can xoa bang cha (chua PK) truoc.
 	public boolean deleteById(Integer numberCard, Integer bookingId) {
 		BookBorrowingId bookBorrowingId = new BookBorrowingId(numberCard, bookingId);
-		BookBorrowing bookBorrowing = bookBorrowingRepository.getOne(bookBorrowingId);
-		if (bookBorrowing != null) {
+		if (bookBorrowingId != null) {
 			bookBorrowingRepository.delete(bookBorrowingId);
 			System.out.println("Xoa thanh cong");
 			return true;

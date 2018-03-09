@@ -10,5 +10,5 @@ import com.hamsuhi.entity.Booking;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	Booking findByBookingId(int id);
-	//List<Booking> findByBookNameContaining(String cusName);
+	Booking findByBookName(String bookName);
 }

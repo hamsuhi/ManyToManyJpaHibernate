@@ -2,6 +2,7 @@ package com.hamsuhi.controller;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,13 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.hamsuhi.entity.Reader;
 import com.hamsuhi.entity.Reader;
 import com.hamsuhi.service.ReaderService;
 
@@ -27,7 +26,7 @@ public class ReaderController {
 	@Autowired
 	private ReaderService readerService;
 
-	@GetMapping(value = "'/reader")
+	@GetMapping(value = "/reader")
 	public ResponseEntity<List<Reader>> getAll() {
 		List<Reader> list = readerService.getAllReading();
 		if (list != null) {
@@ -45,21 +44,25 @@ public class ReaderController {
 		return new ResponseEntity<Reader>(reader, HttpStatus.NOT_FOUND);
 	}
 
-	@PostMapping(value = "/reader/")
-	public ResponseEntity<Reader> addUseRaw(@RequestBody Reader reader, UriComponentsBuilder ucBuilder) {
-		Reader test = readerService.addReader(reader);
-		if (test != null) {
-			return new ResponseEntity<Reader>(HttpStatus.CONFLICT);
+	@PostMapping(value = "/reader")
+	public ResponseEntity<?> addUseRaw(Reader reader, UriComponentsBuilder ucBuilder) {
+		boolean test = readerService.addReader(reader);
+		if (test == false) {
+			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 		}
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/api/reader/{id}").buildAndExpand(reader.getNumberCard()).toUri());
-		return new ResponseEntity<Reader>(headers, HttpStatus.CREATED);
+		System.out.println("reader add:" + reader.getNumberCard());
+		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 
-	@PutMapping(value = "/reader/")
-	public ResponseEntity<Reader> updateUseRaw(@RequestBody Reader reader) {
-		readerService.updateReader(reader);
-		return new ResponseEntity<Reader>(reader, HttpStatus.OK);
+	// all null is dead update, must be id
+	@PutMapping(value = "/reader/{id}")
+	public ResponseEntity<?> updateUseRaw(@PathVariable(value = "id") Integer id, Reader reader) {
+		if (readerService.updateReader(reader) == true) {
+			return new ResponseEntity<Reader>(reader, HttpStatus.OK);
+		}
+		return new ResponseEntity<Reader>(reader, HttpStatus.NO_CONTENT);
 	}
 
 	@RequestMapping(value = "/reader/{id}", method = RequestMethod.DELETE)

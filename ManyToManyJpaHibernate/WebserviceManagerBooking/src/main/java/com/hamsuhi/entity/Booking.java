@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import net.minidev.json.annotate.JsonIgnore;
 
 /**
@@ -60,7 +62,7 @@ public class Booking implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	@Column(name = "booking_id", unique = true, nullable = false)
 	public Integer getBookingId() {
@@ -99,7 +101,7 @@ public class Booking implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "booking")
-	@JsonIgnore
+	@JsonBackReference
 	public Set<BookBorrowing> getBookBorrowings() {
 		return this.bookBorrowings;
 	}
@@ -107,7 +109,5 @@ public class Booking implements java.io.Serializable {
 	public void setBookBorrowings(Set<BookBorrowing> bookBorrowings) {
 		this.bookBorrowings = bookBorrowings;
 	}
-	
-
 
 }

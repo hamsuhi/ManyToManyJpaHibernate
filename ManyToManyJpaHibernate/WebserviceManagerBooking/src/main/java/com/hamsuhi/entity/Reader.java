@@ -19,6 +19,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import net.minidev.json.annotate.JsonIgnore;
 
 /**
@@ -61,7 +64,7 @@ public class Reader implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	@Column(name = "number_card", unique = true, nullable = false)
 	public Integer getNumberCard() {
@@ -83,6 +86,7 @@ public class Reader implements java.io.Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_range", length = 10)
+	@JsonFormat(shape=JsonFormat.Shape.STRING,pattern="dd/MM/yyyy")
 	public Date getDateRange() {
 		return this.dateRange;
 	}
@@ -100,8 +104,8 @@ public class Reader implements java.io.Serializable {
 		this.tel = tel;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "reader")
-	@JsonIgnore
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "reader")
+	@JsonBackReference
 	public Set<BookBorrowing> getBookBorrowings() {
 		return this.bookBorrowings;
 	}

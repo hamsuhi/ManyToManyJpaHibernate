@@ -9,4 +9,6 @@ public class ManagerBookingApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ManagerBookingApplication.class, args);
 	}
+
+
 }

@@ -25,16 +25,17 @@ public class BookingController {
 	@Autowired
 	private BookingService bookingService;
 
-	@GetMapping(value = "'/booking")
+	@GetMapping(value = "/booking")
 	public ResponseEntity<List<Booking>> getAll() {
 		List<Booking> list = bookingService.getAllBooking();
 		if (list != null) {
+			System.out.println("abc");
 			return new ResponseEntity<List<Booking>>(list, HttpStatus.OK);
 		}
 		return new ResponseEntity<List<Booking>>(HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/manu/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/booking/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> findById(@PathVariable("id") int id) {
 		Booking booking = bookingService.getByIdBooking(id);
 		if (booking != null) {
@@ -43,19 +44,21 @@ public class BookingController {
 		return new ResponseEntity<Booking>(booking, HttpStatus.NOT_FOUND);
 	}
 
-	@PostMapping(value = "/booking/")
-	public ResponseEntity<Booking> addUseRaw(@RequestBody Booking booking, UriComponentsBuilder ucBuilder) {
-		Booking test = bookingService.addBooking(booking);
-		if (test != null) {
-			return new ResponseEntity<Booking>(HttpStatus.CONFLICT);
+	@PostMapping(value = "/booking")
+	public ResponseEntity<?> addUseRaw(Booking booking, UriComponentsBuilder ucBuilder) {
+		boolean test = bookingService.addBooking(booking);
+		if (test == false) {
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/api/booking/{id}").buildAndExpand(booking.getBookingId()).toUri());
-		return new ResponseEntity<Booking>(headers, HttpStatus.CREATED);
+		System.out.println("abc "+booking.getBookingId());
+		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 
-	@PutMapping(value = "/booking/")
-	public ResponseEntity<Booking> updateUseRaw(@RequestBody Booking booking) {
+	// all null is dead update, must be id
+	@PutMapping(value = "/booking/{id}")
+	public ResponseEntity<Booking> updateUseRaw(@PathVariable int id, Booking booking) {
 		bookingService.updateBooking(booking);
 		return new ResponseEntity<Booking>(booking, HttpStatus.OK);
 	}

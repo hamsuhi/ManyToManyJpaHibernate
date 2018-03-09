@@ -25,31 +25,31 @@ public class ReaderService {
 	}
 
 	public Reader getByIdReader(int id) {
-		Reader readeNew = readerRepository.getOne(id);
+		Reader readeNew = readerRepository.findOne(id);
 		if (readeNew != null) {
 			return readeNew;
 		}
 		return null;
 	}
 
-	public Reader addReader(Reader reader) {
-		Reader readeNew = readerRepository.findOne(reader.getNumberCard());
-		if (readeNew == null) {
-			readerRepository.save(reader);
-			System.out.println("add thanh cong reader");
-			return reader;
+	public boolean addReader(Reader reader) {
+		// Reader readeNew = readerRepository.findOne(reader.getNumberCard());
+		if (readerRepository.save(reader) == null) {
+			return false;
 		}
-		return null;
+		readerRepository.save(reader);
+		System.out.println("add thanh cong reader");
+		return true;
 	}
 
-	public boolean updateReader( Reader reader) {
-			Reader readeNew = readerRepository.findOne(reader.getNumberCard());
-			if (readeNew != null) {
-				readerRepository.saveAndFlush(reader);
-				System.out.println("update ok");
-				return true;
-			}
-			System.out.println("update not nnot ok");
+	public boolean updateReader(Reader reader) {
+		Reader readeNew = readerRepository.findOne(reader.getNumberCard());
+		if (readeNew != null) {
+			readerRepository.saveAndFlush(reader);
+			System.out.println("update ok"+ reader.getReaderName());
+			return true;
+		}
+		System.out.println("update not nnot ok");
 		return false;
 	}
 

@@ -32,14 +32,13 @@ public class BookingService {
 		return null;
 	}
 
-	public Booking addBooking(Booking booking) {
-		Booking bookNew = bookingRepository.findOne(booking.getBookingId());
-		if (bookNew == null) {
-			bookingRepository.save(booking);
-			System.out.println("add thanh cong booking");
-			return booking;
+	public boolean addBooking(Booking booking) {
+		if (bookingRepository.save(booking) == null) {
+//			bookingRepository.save(booking);
+			return false;
+		}else {
+			return true;
 		}
-		return null;
 	}
 
 	public boolean updateBooking(Booking booking) {
