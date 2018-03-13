@@ -18,10 +18,7 @@ public class BookingService {
 
 	public List<Booking> getAllBooking() {
 		List<Booking> list = bookingRepository.findAll();
-		if (list != null) {
 			return list;
-		}
-		return null;
 	}
 
 	public Booking getByIdBooking(int id) {
